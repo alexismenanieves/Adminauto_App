@@ -1,5 +1,6 @@
 .env
 .flaskenv
+.vscode
 misc
 *.csv
 __pycache__
