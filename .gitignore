@@ -1,0 +1,9 @@
+.env
+.flaskenv
+misc
+*.csv
+__pycache__
+application/__pycache__
+.DS_Store
+application/.DS_Store
+application/templates/.DS_Store
