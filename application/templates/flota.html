@@ -1,0 +1,224 @@
+{% extends "layout.html" %}
+    
+{% block content %}
+<script type="text/javascript" language="javascript">
+    $(document).ready(function(){
+        var dataTable = $('#sample_data').DataTable();   
+    }); 
+    function del(ID, title){
+        if (confirm("¿Seguro que quiere borrar? '" + title + "'")){
+            window.location.href = '/delete/' + ID;
+        }
+    }
+    </script>
+
+<h3>Lista de vehículos <button type="button"  class="btn btn-success float-right"
+    data-toggle="modal" data-target="#mymodal">Agregar vehículos</button>
+</h3>
+
+<div class="panel panel-default">
+    <table id="sample_data" class="table table-hover table-bordered table-striped">
+        <thead>
+        <tr>
+            <th scope="col">Placa</th>
+            <th scope="col">Marca</th>
+            <th scope="col">Modelo</th>
+            <th scope="col">Año</th>
+            <th scope="col">Último soat</th>
+            <th scope="col">Última revisión</th>
+            <th scope="col">Acción</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <!-- Construct the rest of vehicles here -->
+        {% for data in flotaTable %}
+        <tr>
+            <td data-pk="{{ data.veh_lic_pla }}" scope='row'>{{ data["veh_lic_pla"] }}</td>
+            <td data-name="marca" class="marca" data-type="text" data-pk="{{ data.veh_lic_pla }}">{{ data["veh_mar"] }}</td>
+            <td data-name="modelo" class="modelo" data-type="text" data-pk="{{ data.veh_lic_pla }}">{{ data["veh_mod"] }}</td>
+            <td data-name="anio" class="anio" data-type="text" data-pk="{{  data.veh_lic_pla }}">{{ data["veh_yea"] }}</td>
+            <td data-name="seguro" class="seguro" data-type="text" data-pk="{{  data.veh_lic_pla }}">{{ data["veh_soa_seg"] }}</td>
+            <td data-name="revision" class="revision" data-type="text" data-pk="{{  data.veh_lic_pla }}">{{ data["veh_rev_tec"] }}</td>
+            <td data-pk="{{ data.veh_lic_pla }}"> 
+                <a href="/update/{{data.veh_lic_pla}}" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#modaledit{{data.veh_lic_pla}}">Editar</a>
+                <a href="/delete/{{data.veh_lic_pla}}" class="btn btn-danger btn-xs" onclick="return confirm('Seguro que desea borrar?')">Borrar</a>
+            </td>
+        </tr>
+        <!-- Modal Edit Employee-->
+        <div id="modaledit{{data.veh_lic_pla}}" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Actualizar información</h4>
+                    </div>
+        
+                    <div class="modal-body">
+                        <form action="{{url_for('listado')}}" method="POST">
+                            <div class="form-group">
+                                <label>Placa:</label>
+                                <input type="hidden"  name="veh_lic_pla" value="{{data.veh_lic_pla}}">
+                                <input type="text" class="form-control" name="ve_lic_pla" value="{{data.veh_lic_pla}}">
+                            </div>
+                            <div class="form-group">
+                                <label>Uso:</label>
+                                <input type="text" class="form-control" name="veh_usg" value="{{data.veh_usg}}">
+                            </div>
+                            <div class="form-group">
+                                <label>Marca:</label>
+                                <input type="text" class="form-control" name="veh_mar" value="{{data.veh_mar}}">
+                            </div>
+                            <div class="form-group">
+                                <label>Modelo:</label>
+                                <input type="text" class="form-control" name="veh_mod" value="{{data.veh_mod}}">
+                            </div>
+                            <div class="form-group">
+                                <label>Año:</label>
+                                <input type="text" class="form-control" name="veh_yea" value="{{data.veh_yea}}">
+                            </div>
+                            <div class="form-group">
+                                <label>Color:</label>
+                                <input type="text" class="form-control" name="veh_col" value="{{data.veh_col}}">
+                            </div>
+                            <div class="form-group">
+                                <label>Propietario:</label>
+                                <input type="text" class="form-control" name="veh_prop_snp" value="{{data.veh_prop_snp}}">
+                            </div>
+                            <div class="form-group">
+                                <label>Usuario:</label>
+                                <input type="text" class="form-control" name="veh_usr_id" value="{{data.veh_usr_id}}">
+                            </div>
+                            <div class="form-group">
+                                <label>Usuario:</label>
+                                <input type="text" class="form-control" name="veh_usr_id" value="{{data.veh_usr_id}}">
+                            </div>
+                            <div class="form-group">
+                                <label>Tiene GPS:</label>
+                                <input type="text" class="form-control" name="veh_gps" value="{{data.veh_gps}}">
+                            </div>
+                            <div class="form-group">
+                                <label>Revisión técnica:</label>
+                                <input type="date" class="form-control" name="veh_rev_tec" value="{{data.veh_rev_tec}}">
+                            </div>
+                            <div class="form-group">
+                                <label>Pago SOAT:</label>
+                                <input type="date" class="form-control" name="veh_soa_seg" value="{{data.veh_soa_seg}}">
+                            </div>
+                            <div class="form-group">
+                                <label>Contratante seguro:</label>
+                                <input type="text" class="form-control" name="veh_seg_ctr" value="{{data.veh_seg_ctr}}">
+                            </div>
+                            <div class="form-group">
+                                <label>Broker seguro:</label>
+                                <input type="text" class="form-control" name="veh_seg_bro" value="{{data.veh_seg_bro}}">
+                            </div>
+                            <div class="form-group">
+                                <label>Número de seguro:</label>
+                                <input type="text" class="form-control" name="veh_seg_nro" value="{{data.veh_seg_nro}}">
+                            </div>
+                            <div class="form-group">
+                                <label>Fecha seguro:</label>
+                                <input type="date" class="form-control" name="veh_seg_ini" value="{{data.veh_seg_ini}}">
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-primary" type="submit">Actualizar</button>
+                            </div>
+                        </form>
+                    </div>
+        
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% endfor %}
+        
+        </tbody>
+    </table>
+<!-- Modal for add vehicle -->
+
+    <div id="mymodal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Agregar vehículo</h4>
+                </div>
+                
+                <div class="modal-body">
+                    <form action="{{url_for('listado')}}" method="POST">
+                        <div class="form-group">
+                            <label>Placa        :</label>
+                            <input type="text" class="form-control" name="veh_lic_pla" required="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Uso          :</label>
+                            <input type="text" class="form-control" name="veh_usg" required="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Marca        :</label>
+                            <input type="text" class="form-control" name="veh_mar" required="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Modelo       :</label>
+                            <input type="text" class="form-control" name="veh_mod" required="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Año          :</label>
+                            <input type="text" class="form-control" name="veh_yea" required="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Color        :</label>
+                            <input type="text" class="form-control" name="veh_col" required="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Propietario  :</label>
+                            <input type="text" class="form-control" name="veh_prop_snp" required="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Usuario      :</label>
+                            <input type="text" class="form-control" name="veh_usr_id" required="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Tiene GPS?   :</label>
+                            <input type="text" class="form-control" name="veh_gps" required="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Ultima revision técnica:</label>
+                            <input type="date" class="form-control" name="veh_rev_tec" required="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Ultima pago de SOAT:</label>
+                            <input type="date" class="form-control" name="veh_soa_seg" required="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Contratante de seguro:</label>
+                            <input type="text" class="form-control" name="veh_seg_ctr" required="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Broker del seguro:</label>
+                            <input type="text" class="form-control" name="veh_seg_bro" required="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Número del seguro:</label>
+                            <input type="text" class="form-control" name="veh_seg_nro" required="1">
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-primary" type="submit">Agregar vehículo</button>
+                        </div>
+                    </form>
+                </div>
+    
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- End modal add vehicle -->
+
+</div>
+
+{% endblock %}

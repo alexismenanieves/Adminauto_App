@@ -1,0 +1,60 @@
+
+{% extends "layout.html" %}
+   
+{% block content %}
+
+<div class="container">
+    <form name="login" action="" method="post" novalidate>
+    <fieldset class="form-group">
+        <legend>{{title}}</legend>     
+        {{ form.hidden_tag() }} 
+            <p> {{ form.editor.label }}</br>
+                {{ form.editor }}
+                {% for error in form.editor.errors %}
+                <span class="error-message">{{ error }}</span>
+                {% endfor %}
+            </p>  
+            
+            <p> {{ form.first_name.label }}</br>
+                {{ form.first_name }}
+                {% for error in form.first_name.errors %}
+                 <span class="error-message">{{ error }}</span>
+                {% endfor %}
+            </p>
+        
+            <p> {{ form.pat_name.label }}</br>
+                {{ form.pat_name }}
+                {% for error in form.pat_name.errors %}
+                 <span class="error-message">{{ error }}</span>
+                {% endfor %}
+            </p>
+
+            <p> {{ form.mat_name.label }}</br>
+                {{ form.mat_name }}
+                {% for error in form.mat_name.errors %}
+                 <span class="error-message">{{ error }}</span>
+                {% endfor %}
+            </p>
+        
+            <p> {{ form.password.label }}</br>
+                {{ form.password }}
+                {% for error in form.password.errors %}
+                 <span class="error-message">{{ error }}</span>
+                {% endfor %}
+            </p>
+        
+            <p> {{ form.password_confirm.label }}</br>
+                {{ form.password_confirm }}
+                {% for error in form.password_confirm.errors %}
+                 <span class="error-message">{{ error }}</span>
+                {% endfor %}
+            </p>
+        
+            <p> 
+                {{ form.submit() }}
+            </p>
+        
+    </fieldset>
+    </form>
+</div>
+{% endblock %}

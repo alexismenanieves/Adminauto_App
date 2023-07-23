@@ -1,0 +1,38 @@
+<header>
+    <div>
+        <nav>
+            <ul class="nav nav-pills">
+                {% if session['edt_nom'] %}
+                <li class="nav-item"><a href="{{ url_for('inicio') }}" 
+                    class="nav-link {% if inicio %}active{% endif %}">Inicio</a></li>
+                
+                <li class="nav-item"><a href="{{ url_for('flota') }}" 
+                    class="nav-link {% if flota %}active{% endif %}">Flota</a></li>
+
+                <li class="nav-item"><a href="{{ url_for('usuarios') }}" 
+                    class="nav-link {% if usuarios %}active{% endif %}">Usuarios</a></li>
+
+                <li class="nav-item"><a href="{{ url_for('movimiento') }}" 
+                    class="nav-link {% if usuarios %}active{% endif %}">Movimiento</a></li>
+                {% endif %}
+
+                {% if not session['edt_nom'] %}
+                    <li class="nav-item"><a href="{{ url_for('login') }}" 
+                        class="nav-link {% if login %}active{% endif %}">Login</a></li>
+                {% else %}
+                    <li class="nav-item"><a href="{{ url_for('logout') }}" 
+                        class="nav-link">Logout</a></li>
+                {% endif %}
+
+                {% if session['edt_nom'] %}
+                    <li class="nav-item"><a href="{{ url_for('registro') }}" 
+                        class="nav-link {% if registro %}active{% endif %}">Registro</a></li>   
+                {% endif %}
+                {% if session['edt_nom'] %}
+                    <div style="text-align: right; color: teal; margin: 20px 0 0;">{{ session['edt_nom'] }}</div>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    <hr style="clear:both">
+</header>

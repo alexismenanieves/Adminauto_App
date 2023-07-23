@@ -1,0 +1,178 @@
+{% extends "layout.html" %}
+    
+{% block content %}
+<script type="text/javascript" language="javascript">
+    $(document).ready(function(){
+        var dataTable = $('#sample_data').DataTable();
+    }); 
+    function del(ID, title){
+        if (confirm("Are you sure you want to delete '" + title + "'")){
+            window.location.href = '/delete/' + ID;
+        }
+    }
+    </script>
+
+<h3>Lista de usuarios <button type="button"  class="btn btn-success float-right"
+    data-toggle="modal" data-target="#mymodal">Agregar usuario</button>
+</h3>
+
+<div class="panel panel-default">
+    <table id="sample_data" class="table table-hover table-bordered table-striped">
+        <thead>
+        <tr>
+            <th scope="col">Docum.</th>
+            <th scope="col">Tipo</th>
+            <th scope="col">Nombres</th>
+            <th scope="col">Apellido</th>
+            <th scope="col">Empresa</th>
+            <th scope="col">Teléfono</th>
+            <th scope="col">Email</th>
+            <th scope="col">Acción</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <!-- Construct the rest of users here -->
+        {% for data in usuariosTable %}
+        <tr>
+            <td data-pk="{{ data.usr_id }}" scope='row'>{{ data.usr_id }}</td>
+            <td data-name="marca" data-type="text" data-pk="{{ data.usr_tip_doc }}">{{ data.usr_tip_doc }}</td>
+            <td data-name="modelo" data-type="text" data-pk="{{ data.usr_nom }}">{{ data.usr_nom }}</td>
+            <td data-name="anio" data-type="text" data-pk="{{  data.usr_ape_pat }}">{{ data.usr_ape_pat }}</td>
+            <td data-name="revision" data-type="text" data-pk="{{  data.usr_emp }}">{{ data.usr_emp }}</td>
+            <td data-name="revision" data-type="text" data-pk="{{  data.usr_tel_cel }}">{{ data.usr_tel_cel }}</td>
+            <td data-name="revision" data-type="text" data-pk="{{  data.usr_cor_ele }}">{{ data.usr_cor_ele }}</td>
+            <td data-pk="{{ data.usr_id }}"> 
+                <a class="btn btn-warning btn-xs" data-toggle="modal" data-target="#modaledit{{data.usr_id}}">Editar</a>
+                <a href="/delete/{{data.usr_id}}" class="btn btn-danger btn-xs" onclick="return confirm('Seguro que desea borrar?')">Borrar</a>
+            </td>
+        </tr>
+        <!-- Modal Edit Employee-->
+        <div id="modaledit{{data.usr_id}}" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Actualizar información</h4>
+                    </div>
+        
+                    <div class="modal-body">
+                        <form action="{{url_for('apiedituser')}}" method="POST">
+                            <div class="form-group">
+                                <label>Documento:</label>
+                                <!--<input type="hidden" name="usr_id" value="{{data.usr_id}}">-->
+                                <input type="text" class="form-control" name="usr_id" value="{{data.usr_id}}">
+                            </div>
+                            <div class="form-group">
+                                <label>Tipo:</label>
+                                <input type="text" class="form-control" name="usr_tip_doc" value="{{data.usr_tip_doc}}">
+                            </div>
+                            <div class="form-group">
+                                <label>Nombres:</label>
+                                <input type="text" class="form-control" name="usr_nom" value="{{data.usr_nom}}">
+                            </div>
+                            <div class="form-group">
+                                <label>Apellido Paterno:</label>
+                                <input type="text" class="form-control" name="usr_ape_pat" value="{{data.usr_ape_pat}}">
+                            </div>
+                            <div class="form-group">
+                                <label>Apellido Materno:</label>
+                                <input type="text" class="form-control" name="usr_ape_mat" value="{{data.usr_ape_mat}}">
+                            </div>
+                            <div class="form-group">
+                                <label>Apellido Materno:</label>
+                                <input type="text" class="form-control" name="usr_emp" value="{{data.usr_emp}}">
+                            </div>
+                            <div class="form-group">
+                                <label>Teléfono:</label>
+                                <input type="text" class="form-control" name="usr_tel_cel" value="{{data.usr_tel_cel}}">
+                            </div>
+                            <div class="form-group">
+                                <label>Email:</label>
+                                <input type="text" class="form-control" name="usr_cor_ele" value="{{data.usr_cor_ele}}">
+                            </div>
+                            <div class="form-group">
+                                <label>Dirección:</label>
+                                <input type="text" class="form-control" name="usr_dir" value="{{data.usr_dir}}">
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-primary" type="submit">Actualizar</button>
+                            </div>
+                        </form>
+                    </div>
+        
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% endfor %}
+        
+        </tbody>
+    </table>
+<!-- Modal for add usr -->
+
+    <div id="mymodal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Agregar usuario</h4>
+                </div>
+                
+                <div class="modal-body">
+                    <form action="{{url_for('apiadduser')}}" method="POST">
+                        <div class="form-group">
+                            <label>Documento:</label>
+                            <input type="text" class="form-control" name="usr_id" required="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Tipo:</label>
+                            <input type="text" class="form-control" name="usr_tip_doc" required="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Nombres:</label>
+                            <input type="text" class="form-control" name="usr_nom" required="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Apellido Paterno:</label>
+                            <input type="text" class="form-control" name="usr_ape_pat" required="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Apellido Materno:</label>
+                            <input type="text" class="form-control" name="usr_ape_mat" required="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Empresa:</label>
+                            <input type="text" class="form-control" name="usr_emp" required="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Teléfono:</label>
+                            <input type="text" class="form-control" name="usr_tel_cel" required="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Dirección:</label>
+                            <input type="text" class="form-control" name="usr_dir" required="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Email:</label>
+                            <input type="text" class="form-control" name="usr_cor_ele" required="1">
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-primary" type="submit">Agregar usuario</button>
+                        </div>
+                    </form>
+                </div>
+    
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- End modal add vehicle -->
+
+</div>
+
+{% endblock %}
