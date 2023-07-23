@@ -123,22 +123,47 @@ def apiadduser():
     if session.get('edt_nom') and request.method=='POST':
         curr_editor = session['edt_nom']
         now_dt  = datetime.now()
-        user = Users(usr_id     =request.form['usr_id'], 
-                     usr_tip_doc=request.form['usr_tip_doc'],
-                     usr_nom    =request.form['usr_nom'],
-                     usr_ape_pat=request.form['usr_ape_pat'],
-                     usr_ape_mat=request.form['usr_ape_mat'],
-                     usr_emp    =request.form['usr_emp'],
-                     usr_tel_cel=request.form['usr_tel_cel'],
-                     usr_dir    =request.form['usr_dir'], 
-                     usr_cor_ele=request.form['usr_cor_ele'],
-                     usr_sta    ='ACTIVO',
-                     usr_sta_mod=curr_editor.upper(),
-                     usr_sta_fec=now_dt)
-        db.session.add(user)
-        db.session.commit()
-        flash("Usuario añadido con éxito", "success")
-        return redirect(url_for('usuarios'))
+        user_rs = Users.query.filter_by(usr_id=id).first()
+        if user_rs:
+            user_ck = Users.query.filter_by(usr_id=id,usr_sta='ACTIVO').first()
+            if user_ck:
+                flash("Usuario ya existe","danger")
+                return redirect(url_for('usuarios'))
+            else:
+                Users.query.filter_by(usr_id=id).update(dict(
+                    usr_tip_doc=request.form['usr_tip_doc'],
+                    usr_nom    =request.form['usr_nom'],
+                    usr_ape_pat=request.form['usr_ape_pat'],
+                    usr_ape_mat=request.form['usr_ape_mat'],
+                    usr_emp    =request.form['usr_emp'],
+                    usr_tel_cel=request.form['usr_tel_cel'],
+                    usr_dir    =request.form['usr_dir'], 
+                    usr_cor_ele=request.form['usr_cor_ele'],
+                    usr_sta    ='ACTIVO',
+                    usr_sta_mod=curr_editor.upper(),
+                    usr_sta_fec=now_dt))
+                db.session.commit()
+                flash("Usuario añadido con éxito","success")
+                return redirect(url_for('usuarios'))
+            
+        else:
+            user = Users(
+                usr_id     =request.form['usr_id'],
+                usr_tip_doc=request.form['usr_tip_doc'],
+                usr_nom     =request.form['usr_nom'],
+                usr_ape_pat =request.form['usr_ape_pat'],
+                usr_ape_mat =request.form['usr_ape_mat'],
+                usr_emp     =request.form['usr_emp'],
+                usr_tel_cel =request.form['usr_tel_cel'],
+                usr_dir     =request.form['usr_dir'], 
+                usr_cor_ele =request.form['usr_cor_ele'],
+                usr_sta     ='ACTIVO',
+                usr_sta_mod =curr_editor.upper(),
+                usr_sta_fec =now_dt)
+            db.session.add(user)
+            db.session.commit()
+            flash("Usuario añadido con éxito", "success")
+            return redirect(url_for('usuarios'))
     else:
         redirect(url_for('login'))
 
@@ -148,10 +173,10 @@ def apiedituser():
         now_dt = datetime.now()
         id = request.form['usr_id']
         curr_editor = session['edt_nom']
-        user_rs = Users.query.filter_by(usr_id=id).first()
+        user_rs = Users.query.filter_by(usr_id=id,usr_sta='ACTIVO').first()
         if not user_rs:
             flash("No se pudo actualizar","danger")
-            return render_template('listado.html')
+            return redirect(url_for('usuarios'))
         else:
             Users.query.filter_by(usr_id=id).update(dict(
             #user_rs.update(dict(
@@ -168,6 +193,27 @@ def apiedituser():
                 usr_sta_fec=now_dt))
             db.session.commit()
             flash("Actualización exitosa","success")
+            return redirect(url_for('usuarios'))
+    else:
+        redirect(url_for('login'))
+
+@app.route('/apideactivateuser', methods=['POST'])
+def apideactivateuser():
+    if session.get('edt_nom') and request.method=='POST':
+        now_dt = datetime.now()
+        id = request.form['usr_id']
+        curr_editor = session['edt_nom']
+        user_rs = Users.query.filter_by(usr_id=id,usr_sta='ACTIVO').first()
+        if not user_rs:
+            flash("No se pudo desactivar","danger")
+            return redirect(url_for('usuarios'))
+        else:
+            Users.query.filter_by(usr_id=id).update(dict(
+                usr_sta    ='INACTIVO',
+                usr_sta_mod=curr_editor.upper(),
+                usr_sta_fec=now_dt))
+            db.session.commit()
+            flash("Usuario eliminado","success")
             return redirect(url_for('usuarios'))
     else:
         redirect(url_for('login'))
@@ -204,27 +250,32 @@ def apiaddvehicle():
     else:
         redirect(url_for('login'))
 
-@app.route('/apiedituser', methods=['POST'])
-def apiedituser():
+@app.route('/apieditvehicle', methods=['POST'])
+def apieditvehicle():
     if session.get('edt_nom') and request.method=='POST':
         now_dt = datetime.now()
-        id = request.form['usr_id']
+        id = request.form['veh_lic_pla']
         curr_editor = session['edt_nom']
-        user_rs = Users.query.filter_by(usr_id=id).first()
+        user_rs = Vehicles.query.filter_by(veh_lic_pla=id).first()
         if not user_rs:
             flash("No se pudo actualizar","danger")
             return render_template('listado.html')
         else:
-            Users.query.filter_by(usr_id=id).update(dict(
-            #user_rs.update(dict(
-                usr_tip_doc=request.form['usr_tip_doc'],
-                usr_nom    =request.form['usr_nom'],
-                usr_ape_pat=request.form['usr_ape_pat'],
-                usr_ape_mat=request.form['usr_ape_mat'],
-                usr_emp    =request.form['usr_emp'],
-                usr_tel_cel=request.form['usr_tel_cel'],
-                usr_dir    =request.form['usr_dir'], 
-                usr_cor_ele=request.form['usr_cor_ele'],
+            Vehicles.query.filter_by(veh_lic_pla=id).update(dict(
+                veh_usg     =request.form['veh_usg'],
+                veh_mar     =request.form['veh_mar'],
+                veh_mod     =request.form['veh_mod'],
+                veh_yea     =request.form['veh_yea'],
+                veh_col     =request.form['veh_col'],
+                veh_prop_snp=request.form['veh_prop_snp'],
+                veh_usr_id  =request.form['veh_usr_id'], 
+                veh_gps     =request.form['veh_gps'],
+                veh_rev_tec =request.form['veh_rev_tec'],
+                veh_soa_seg =request.form['veh_soa_seg'],
+                veh_seg_ctr =request.form['veh_seg_ctr'],
+                veh_seg_bro =request.form['veh_seg_bro'],
+                veh_seg_nro =request.form['veh_seg_nro'],
+                veh_seg_ini =request.form['veh_seg_ini'],
                 usr_sta    ='ACTIVO',
                 usr_sta_mod=curr_editor.upper(),
                 usr_sta_fec=now_dt))
