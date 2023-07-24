@@ -41,8 +41,8 @@
             <td data-name="seguro" class="seguro" data-type="text" data-pk="{{  data.veh_lic_pla }}">{{ data["veh_soa_seg"] }}</td>
             <td data-name="revision" class="revision" data-type="text" data-pk="{{  data.veh_lic_pla }}">{{ data["veh_rev_tec"] }}</td>
             <td data-pk="{{ data.veh_lic_pla }}"> 
-                <a href="/update/{{data.veh_lic_pla}}" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#modaledit{{data.veh_lic_pla}}">Editar</a>
-                <a href="/delete/{{data.veh_lic_pla}}" class="btn btn-danger btn-xs" onclick="return confirm('Seguro que desea borrar?')">Borrar</a>
+                <a class="btn btn-warning btn-xs" data-toggle="modal" data-target="#modaledit{{data.veh_lic_pla}}">Editar</a>
+                <a class="btn btn-danger btn-xs" onclick="return confirm('Seguro que desea borrar?')">Borrar</a>
             </td>
         </tr>
         <!-- Modal Edit Employee-->
@@ -54,7 +54,7 @@
                     </div>
         
                     <div class="modal-body">
-                        <form action="{{url_for('flota')}}" method="POST">
+                        <form action="{{url_for('apieditvehicle')}}" method="POST">
                             <div class="form-group">
                                 <label>Placa:</label>
                                 <input type="hidden"  name="veh_lic_pla" value="{{data.veh_lic_pla}}">
@@ -83,10 +83,6 @@
                             <div class="form-group">
                                 <label>Propietario:</label>
                                 <input type="text" class="form-control" name="veh_prop_snp" value="{{data.veh_prop_snp}}">
-                            </div>
-                            <div class="form-group">
-                                <label>Usuario:</label>
-                                <input type="text" class="form-control" name="veh_usr_id" value="{{data.veh_usr_id}}">
                             </div>
                             <div class="form-group">
                                 <label>Usuario:</label>
@@ -147,29 +143,29 @@
                 </div>
                 
                 <div class="modal-body">
-                    <form action="{{url_for('flota')}}" method="POST">
+                    <form action="{{url_for('apiaddvehicle')}}" method="POST">
                         <div class="form-group">
-                            <label>Placa        :</label>
+                            <label>Placa:</label>
                             <input type="text" class="form-control" name="veh_lic_pla" required="1">
                         </div>
                         <div class="form-group">
-                            <label>Uso          :</label>
+                            <label>Uso:</label>
                             <input type="text" class="form-control" name="veh_usg" required="1">
                         </div>
                         <div class="form-group">
-                            <label>Marca        :</label>
+                            <label>Marca:</label>
                             <input type="text" class="form-control" name="veh_mar" required="1">
                         </div>
                         <div class="form-group">
-                            <label>Modelo       :</label>
+                            <label>Modelo:</label>
                             <input type="text" class="form-control" name="veh_mod" required="1">
                         </div>
                         <div class="form-group">
-                            <label>Año          :</label>
+                            <label>Año:</label>
                             <input type="text" class="form-control" name="veh_yea" required="1">
                         </div>
                         <div class="form-group">
-                            <label>Color        :</label>
+                            <label>Color:</label>
                             <input type="text" class="form-control" name="veh_col" required="1">
                         </div>
                         <div class="form-group">
@@ -177,7 +173,7 @@
                             <input type="text" class="form-control" name="veh_prop_snp" required="1">
                         </div>
                         <div class="form-group">
-                            <label>Usuario      :</label>
+                            <label>Usuario:</label>
                             <input type="text" class="form-control" name="veh_usr_id" required="1">
                         </div>
                         <div class="form-group">
@@ -203,6 +199,10 @@
                         <div class="form-group">
                             <label>Número del seguro:</label>
                             <input type="text" class="form-control" name="veh_seg_nro">
+                        </div>
+                        <div class="form-group">
+                            <label>Inicio del seguro:</label>
+                            <input type="date" class="form-control" name="veh_seg_ini">
                         </div>
                         <div class="form-group">
                             <button class="btn btn-primary" type="submit">Agregar vehículo</button>
