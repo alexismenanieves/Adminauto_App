@@ -54,7 +54,7 @@
                     </div>
         
                     <div class="modal-body">
-                        <form action="{{url_for('listado')}}" method="POST">
+                        <form action="{{url_for('flota')}}" method="POST">
                             <div class="form-group">
                                 <label>Placa:</label>
                                 <input type="hidden"  name="veh_lic_pla" value="{{data.veh_lic_pla}}">
@@ -147,7 +147,7 @@
                 </div>
                 
                 <div class="modal-body">
-                    <form action="{{url_for('listado')}}" method="POST">
+                    <form action="{{url_for('flota')}}" method="POST">
                         <div class="form-group">
                             <label>Placa        :</label>
                             <input type="text" class="form-control" name="veh_lic_pla" required="1">
@@ -186,7 +186,7 @@
                         </div>
                         <div class="form-group">
                             <label>Ultima revision técnica:</label>
-                            <input type="date" class="form-control" name="veh_rev_tec" required="1">
+                            <input type="date" class="form-control" name="veh_rev_tec">
                         </div>
                         <div class="form-group">
                             <label>Ultima pago de SOAT:</label>
@@ -194,15 +194,15 @@
                         </div>
                         <div class="form-group">
                             <label>Contratante de seguro:</label>
-                            <input type="text" class="form-control" name="veh_seg_ctr" required="1">
+                            <input type="text" class="form-control" name="veh_seg_ctr">
                         </div>
                         <div class="form-group">
                             <label>Broker del seguro:</label>
-                            <input type="text" class="form-control" name="veh_seg_bro" required="1">
+                            <input type="text" class="form-control" name="veh_seg_bro">
                         </div>
                         <div class="form-group">
                             <label>Número del seguro:</label>
-                            <input type="text" class="form-control" name="veh_seg_nro" required="1">
+                            <input type="text" class="form-control" name="veh_seg_nro">
                         </div>
                         <div class="form-group">
                             <button class="btn btn-primary" type="submit">Agregar vehículo</button>
