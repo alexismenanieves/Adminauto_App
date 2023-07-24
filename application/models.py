@@ -161,6 +161,9 @@ class Records(db.Model):
     rec_usr_mix = db.Column(String) # MIX OF NAME AND PAT NAME
     rec_veh_loc = db.Column(String) # LOCATION
     rec_veh_des = db.Column(String) # COMMENTS FOR THE RECORD
+    rec_sta     = db.Column(String) # ACTIVITY STATUS
+    rec_sta_mod = db.Column(String) # MODIFIER
+    rec_sta_fec = db.Column(DateTime) # TIMESTAMP
 
     def __repr__(self):
         return self.toJSON()
@@ -178,6 +181,9 @@ class Records(db.Model):
         cls_dict['rec_usr_mix'] = self.rec_usr_mix
         cls_dict['rec_veh_loc'] = self.rec_veh_loc
         cls_dict['rec_veh_des'] = self.rec_veh_des
+        cls_dict['rec_sta']     = self.rec_sta
+        cls_dict['rec_sta_mod'] = self.rec_sta_mod
+        cls_dict['rec_sta_fec'] = self.rec_sta_fec
         return cls_dict
 
     def toJSON(self):
