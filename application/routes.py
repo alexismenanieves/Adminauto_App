@@ -64,7 +64,7 @@ def movimiento():
         return redirect(url_for('login'))
     records = Records.query.order_by("rec_dat")
     return render_template('movimiento.html', 
-                           recordsTable=usuarios, 
+                           recordsTable=records, 
                            records=True)
 
 @app.route("/logout")
@@ -225,7 +225,7 @@ def apiaddvehicle():
             rev_tec_date = None
         else:
             rev_tec_date = request.form['veh_rev_tec']
-        if request.form['veh_seg_ini'] =='' or equest.form['veh_seg_ini'] is None:
+        if request.form['veh_seg_ini'] =='' or request.form['veh_seg_ini'] is None:
             veh_seg_date = None
         else:
             veh_seg_date = request.form['veh_seg_ini']
@@ -342,3 +342,100 @@ def apideactivatevehicle():
         redirect(url_for('login'))
 
 # Records
+@app.route('/apiaddrecord', methods=['POST'])
+def apiaddrecord():
+    if session.get('edt_nom') and request.method=='POST':
+        curr_editor = session['edt_nom']
+        veh_rs = Vehicles.query.filter_by(veh_lic_pla=request.form['rec_veh_pla']).first()
+        usr_rs = Users.query.filter_by(usr_id=request.form['rec_usr_id']).first()
+        if not veh_rs:
+            flash("Vehiculo no existe","danger")
+            return redirect(url_for('movimiento'))
+        if not usr_rs:
+            flash("Usuario no existe","danger")
+            return redirect(url_for("movimiento"))
+        
+        veh_mix = veh_rs['veh_mar'] + " " + veh_rs['veh_mod']
+        usr_mix = usr_rs['usr_nom'] + " " + usr_rs['usr_ape_pat']
+
+        now_dt  = datetime.now()
+        record = Records(
+            rec_dat     =request.form['rec_dat'],
+            rec_veh_pla =request.form['rec_veh_pla'],
+            rec_veh_mix =veh_mix,
+            rec_usr_id  =request.form['rec_usr_id'],
+            rec_usr_mix = usr_mix,
+            rec_veh_loc =request.form['rec_veh_loc'],
+            rec_veh_des =request.form['rec_veh_des'],
+            usr_tel_cel =request.form['usr_tel_cel'],
+            usr_sta     ='ACTIVO',
+            usr_sta_mod =curr_editor.upper(),
+            usr_sta_fec =now_dt)
+        db.session.add(record)
+        db.session.commit()
+        flash("Registro añadido con éxito", "success")
+        return redirect(url_for('movimiento'))
+    else:
+        redirect(url_for('login'))
+
+@app.route('/apieditrecord', methods=['POST'])
+def apieditrecord():
+    if session.get('edt_nom') and request.method=='POST':
+        now_dt = datetime.now()
+        id = request.form['rec_id']
+        curr_editor = session['edt_nom']
+        veh_rs = Vehicles.query.filter_by(veh_lic_pla=request.form['rec_veh_pla']).first()
+        usr_rs = Users.query.filter_by(usr_id=request.form['rec_usr_id']).first()
+        rec_rs = Records.query.filter_by(rec_id=id).first()
+        if not veh_rs:
+            flash("Vehiculo no existe","danger")
+            return redirect(url_for('movimiento'))
+        if not usr_rs:
+            flash("Usuario no existe","danger")
+            return redirect(url_for("movimiento"))
+        
+        veh_mix = veh_rs['veh_mar'] + " " + veh_rs['veh_mod']
+        usr_mix = usr_rs['usr_nom'] + " " + usr_rs['usr_ape_pat']
+
+        if not rec_rs:
+            flash("No se pudo actualizar","danger")
+            return redirect(url_for('movimiento'))
+        else:
+            Records.query.filter_by(rec_id=id).update(dict(
+                rec_dat     =request.form['rec_dat'],
+                rec_veh_pla =request.form['rec_veh_pla'],
+                rec_veh_mix =veh_mix,
+                rec_usr_id  =request.form['rec_usr_id'],
+                rec_usr_mix =usr_mix,
+                rec_veh_loc =request.form['rec_veh_loc'],
+                rec_veh_des =request.form['rec_veh_des'],
+                usr_tel_cel =request.form['usr_tel_cel'],
+                rec_sta     ='ACTIVO',
+                rec_sta_mod =curr_editor.upper(),
+                rec_sta_fec =now_dt))
+            db.session.commit()
+            flash("Actualización exitosa","success")
+            return redirect(url_for('movimiento'))
+    else:
+        redirect(url_for('login'))
+
+@app.route('/apideactivaterecord', methods=['POST'])
+def apideactivaterecord():
+    if session.get('edt_nom') and request.method=='POST':
+        now_dt = datetime.now()
+        id = request.form['rec_id']
+        curr_editor = session['edt_nom']
+        rec_rs = Records.query.filter_by(rec_id=id,rec_sta='ACTIVO').first()
+        if not rec_rs:
+            flash("No se pudo borrar","danger")
+            return redirect(url_for('movimiento'))
+        else:
+            Users.query.filter_by(rec_id=id).update(dict(
+                rec_sta    ='INACTIVO',
+                rec_sta_mod=curr_editor.upper(),
+                rec_sta_fec=now_dt))
+            db.session.commit()
+            flash("Registro eliminado","success")
+            return redirect(url_for('movimiento'))
+    else:
+        redirect(url_for('login'))
