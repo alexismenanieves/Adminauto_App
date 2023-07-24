@@ -111,11 +111,13 @@ users_schema = UserSchema(many=True)
 vehicle_schema = VehicleSchema()
 vehicles_schema = VehicleSchema(many=True)
 
+# Users
 @app.route('/apiadduser', methods=['POST'])
 def apiadduser():
     if session.get('edt_nom') and request.method=='POST':
         curr_editor = session['edt_nom']
         now_dt  = datetime.now()
+        id = request.form['usr_id']
         user_rs = Users.query.filter_by(usr_id=id).first()
         if user_rs:
             user_ck = Users.query.filter_by(usr_id=id,usr_sta='ACTIVO').first()
@@ -198,7 +200,7 @@ def apideactivateuser():
         curr_editor = session['edt_nom']
         user_rs = Users.query.filter_by(usr_id=id,usr_sta='ACTIVO').first()
         if not user_rs:
-            flash("No se pudo desactivar","danger")
+            flash("No se pudo borrar","danger")
             return redirect(url_for('usuarios'))
         else:
             Users.query.filter_by(usr_id=id).update(dict(
@@ -211,21 +213,31 @@ def apideactivateuser():
     else:
         redirect(url_for('login'))
 
+# Vehicles
 @app.route('/apiaddvehicle', methods=['POST'])
 def apiaddvehicle():
     if session.get('edt_nom') and request.method=='POST':
         curr_editor = session['edt_nom']
         now_dt  = datetime.now()
         id = request.form['veh_lic_pla']
+        # Ensure there is data there
+        if request.form['veh_rev_tec'] =='' or request.form['veh_rev_tec'] is None:
+            rev_tec_date = None
+        else:
+            rev_tec_date = request.form['veh_rev_tec']
+        if request.form['veh_seg_ini'] =='' or equest.form['veh_seg_ini'] is None:
+            veh_seg_date = None
+        else:
+            veh_seg_date = request.form['veh_seg_ini']
+
         veh_rs = Vehicles.query.filter_by(veh_lic_pla=id).first()
         if veh_rs:
-            veh_ck = Users.query.filter_by(veh_lic_pla=id,usr_sta='ACTIVO').first()
+            veh_ck = Users.query.filter_by(veh_lic_pla=id,veh_sta='ACTIVO').first()
             if veh_ck:
                 flash("Vehiculo ya existe","danger")
                 return redirect(url_for('flota'))
             else:
                 Vehicles.query.filter_by(veh_lic_pla=id).update(dict(
-                    veh_lic_pla =request.form['veh_lic_pla'], 
                     veh_usg     =request.form['veh_usg'],
                     veh_mar     =request.form['veh_mar'],
                     veh_mod     =request.form['veh_mod'],
@@ -234,15 +246,15 @@ def apiaddvehicle():
                     veh_prop_snp=request.form['veh_prop_snp'],
                     veh_usr_id  =request.form['veh_usr_id'], 
                     veh_gps     =request.form['veh_gps'],
-                    veh_rev_tec =request.form['veh_rev_tec'],
+                    veh_rev_tec =rev_tec_date,
                     veh_soa_seg =request.form['veh_soa_seg'],
                     veh_seg_ctr =request.form['veh_seg_ctr'],
                     veh_seg_bro =request.form['veh_seg_bro'],
                     veh_seg_nro =request.form['veh_seg_nro'],
-                    veh_seg_ini =request.form['veh_seg_ini'],
-                    usr_sta     ='ACTIVO',
-                    usr_sta_mod=curr_editor.upper(),
-                    usr_sta_fec=now_dt))
+                    veh_seg_ini =veh_seg_date,
+                    veh_sta     ='ACTIVO',
+                    veh_sta_mod=curr_editor.upper(),
+                    veh_sta_fec=now_dt))
                 db.session.commit()
                 flash("Vehiculo añadido con éxito","success")
                 return redirect(url_for('flota'))
@@ -257,16 +269,15 @@ def apiaddvehicle():
                 veh_prop_snp=request.form['veh_prop_snp'],
                 veh_usr_id  =request.form['veh_usr_id'], 
                 veh_gps     =request.form['veh_gps'],
-                veh_rev_tec =request.form['veh_rev_tec'],
+                veh_rev_tec =rev_tec_date,
                 veh_soa_seg =request.form['veh_soa_seg'],
                 veh_seg_ctr =request.form['veh_seg_ctr'],
                 veh_seg_bro =request.form['veh_seg_bro'],
                 veh_seg_nro =request.form['veh_seg_nro'],
-                veh_seg_ini =request.form['veh_seg_ini'],
-                veh_rev_tec =request.form['veh_rev_tec'],
-                usr_sta     ='ACTIVO',
-                usr_sta_mod=curr_editor.upper(),
-                usr_sta_fec=now_dt)
+                veh_seg_ini =veh_seg_date,
+                veh_sta     ='ACTIVO',
+                veh_sta_mod=curr_editor.upper(),
+                veh_sta_fec=now_dt)
             db.session.add(vehicle)
             db.session.commit()
             flash("Vehículo añadido con éxito", "success")
@@ -300,11 +311,34 @@ def apieditvehicle():
                 veh_seg_bro =request.form['veh_seg_bro'],
                 veh_seg_nro =request.form['veh_seg_nro'],
                 veh_seg_ini =request.form['veh_seg_ini'],
-                usr_sta    ='ACTIVO',
-                usr_sta_mod=curr_editor.upper(),
-                usr_sta_fec=now_dt))
+                veh_sta    ='ACTIVO',
+                veh_sta_mod=curr_editor.upper(),
+                veh_sta_fec=now_dt))
             db.session.commit()
             flash("Actualización exitosa","success")
             return redirect(url_for('usuarios'))
     else:
         redirect(url_for('login'))
+
+@app.route('/apideactivatevehicle', methods=['POST'])
+def apideactivatevehicle():
+    if session.get('edt_nom') and request.method=='POST':
+        now_dt = datetime.now()
+        id = request.form['veh_lic_pla']
+        curr_editor = session['edt_nom']
+        user_rs = Vehicles.query.filter_by(veh_lic_pla=id,veh_sta='ACTIVO').first()
+        if not user_rs:
+            flash("No se pudo borrar","danger")
+            return redirect(url_for('usuarios'))
+        else:
+            Vehicles.query.filter_by(usr_id=id).update(dict(
+                veh_sta    ='INACTIVO',
+                veh_sta_mod=curr_editor.upper(),
+                veh_sta_fec=now_dt))
+            db.session.commit()
+            flash("Usuario eliminado","success")
+            return redirect(url_for('flota'))
+    else:
+        redirect(url_for('login'))
+
+# Records
