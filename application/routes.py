@@ -4,7 +4,7 @@ from flask import render_template, request, json, jsonify, Response
 from flask import redirect, url_for, flash, session
 from application.forms import LoginForm, RegisterForm
 from application.models import Users, Vehicles, Records
-from application.models import UserSchema, VehicleSchema
+from application.models import UserSchema, VehicleSchema, RecordSchema
 from datetime import datetime
 
 ########################### WEB SECTION ################################
@@ -110,6 +110,8 @@ user_schema = UserSchema()
 users_schema = UserSchema(many=True)
 vehicle_schema = VehicleSchema()
 vehicles_schema = VehicleSchema(many=True)
+record_schema = RecordSchema()
+records_schema = RecordSchema(many=True)
 
 # Users
 @app.route('/apiadduser', methods=['POST'])
@@ -345,32 +347,39 @@ def apideactivatevehicle():
 @app.route('/apiaddrecord', methods=['POST'])
 def apiaddrecord():
     if session.get('edt_nom') and request.method=='POST':
+        # Basic data
         curr_editor = session['edt_nom']
-        veh_rs = Vehicles.query.filter_by(veh_lic_pla=request.form['rec_veh_pla']).first()
-        usr_rs = Users.query.filter_by(usr_id=request.form['rec_usr_id']).first()
+        now_dt  = datetime.now()
+        # Retrieve form info
+        placa = request.form['rec_veh_pla']
+        usuario = request.form['rec_usr_id']
+        notas = request.form['rec_veh_des']
+        ubi = request.form['rec_veh_loc']
+        # Detect vehicle and user
+        veh_rs = Vehicles.query.filter_by(veh_lic_pla=placa.upper()).first()
+        usr_rs = Users.query.filter_by(usr_id=usuario).first()
+        
         if not veh_rs:
             flash("Vehiculo no existe","danger")
             return redirect(url_for('movimiento'))
         if not usr_rs:
             flash("Usuario no existe","danger")
             return redirect(url_for("movimiento"))
-        
-        veh_mix = veh_rs['veh_mar'] + " " + veh_rs['veh_mod']
-        usr_mix = usr_rs['usr_nom'] + " " + usr_rs['usr_ape_pat']
-
-        now_dt  = datetime.now()
+        # Return mix data
+        veh_mix = veh_rs.veh_mar + " " + veh_rs.veh_mod
+        usr_mix = usr_rs.usr_nom + " " + usr_rs.usr_ape_pat
+        # Save record
         record = Records(
             rec_dat     =request.form['rec_dat'],
-            rec_veh_pla =request.form['rec_veh_pla'],
+            rec_veh_pla =placa.upper(),
             rec_veh_mix =veh_mix,
             rec_usr_id  =request.form['rec_usr_id'],
-            rec_usr_mix = usr_mix,
-            rec_veh_loc =request.form['rec_veh_loc'],
-            rec_veh_des =request.form['rec_veh_des'],
-            usr_tel_cel =request.form['usr_tel_cel'],
-            usr_sta     ='ACTIVO',
-            usr_sta_mod =curr_editor.upper(),
-            usr_sta_fec =now_dt)
+            rec_usr_mix =usr_mix,
+            rec_veh_loc =ubi.upper(),
+            rec_veh_des =notas.upper(),
+            rec_sta     ='ACTIVO',
+            rec_sta_mod =curr_editor.upper(),
+            rec_sta_fec =now_dt)
         db.session.add(record)
         db.session.commit()
         flash("Registro añadido con éxito", "success")
@@ -381,35 +390,43 @@ def apiaddrecord():
 @app.route('/apieditrecord', methods=['POST'])
 def apieditrecord():
     if session.get('edt_nom') and request.method=='POST':
-        now_dt = datetime.now()
-        id = request.form['rec_id']
+        # Basic data
         curr_editor = session['edt_nom']
-        veh_rs = Vehicles.query.filter_by(veh_lic_pla=request.form['rec_veh_pla']).first()
-        usr_rs = Users.query.filter_by(usr_id=request.form['rec_usr_id']).first()
+        now_dt  = datetime.now()
+        # Retrieve form info
+        id      = request.form['rec_id']
+        placa   = request.form['rec_veh_pla']
+        usuario = request.form['rec_usr_id']
+        ubi     = request.form['rec_veh_loc']
+        notas   = request.form['rec_veh_des']
+        # Detect record, vehicle and user
         rec_rs = Records.query.filter_by(rec_id=id).first()
+        veh_rs = Vehicles.query.filter_by(veh_lic_pla=placa.upper()).first()
+        usr_rs = Users.query.filter_by(usr_id=usuario).first()
+       
         if not veh_rs:
             flash("Vehiculo no existe","danger")
             return redirect(url_for('movimiento'))
         if not usr_rs:
             flash("Usuario no existe","danger")
             return redirect(url_for("movimiento"))
+        # Return mix data
+        veh_mix = veh_rs.veh_mar + " " + veh_rs.veh_mod
+        usr_mix = usr_rs.usr_nom + " " + usr_rs.usr_ape_pat
         
-        veh_mix = veh_rs['veh_mar'] + " " + veh_rs['veh_mod']
-        usr_mix = usr_rs['usr_nom'] + " " + usr_rs['usr_ape_pat']
-
+        # Detect record id, exit or update the field
         if not rec_rs:
             flash("No se pudo actualizar","danger")
             return redirect(url_for('movimiento'))
         else:
             Records.query.filter_by(rec_id=id).update(dict(
                 rec_dat     =request.form['rec_dat'],
-                rec_veh_pla =request.form['rec_veh_pla'],
+                rec_veh_pla =placa.upper(),
                 rec_veh_mix =veh_mix,
                 rec_usr_id  =request.form['rec_usr_id'],
                 rec_usr_mix =usr_mix,
-                rec_veh_loc =request.form['rec_veh_loc'],
-                rec_veh_des =request.form['rec_veh_des'],
-                usr_tel_cel =request.form['usr_tel_cel'],
+                rec_veh_loc =ubi.upper(),
+                rec_veh_des =notas.upper(),
                 rec_sta     ='ACTIVO',
                 rec_sta_mod =curr_editor.upper(),
                 rec_sta_fec =now_dt))
