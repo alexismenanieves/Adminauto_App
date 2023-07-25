@@ -202,3 +202,9 @@ class VehicleSchema(ma.Schema):
                   'veh_col','veh_prop_snp','veh_usr_id','veh_gps',
                   'veh_rev_tec','veh_soa_seg','veh_seg_ctr',
                   'veh_seg_bro','veh_seg_nro','veh_seg_ini')
+
+class RecordSchema(ma.Schema):
+    class Meta:
+        fields = ('rec_id','rec_dat','rec_veh_pla','rec_veh_mix',
+                  'rec_usr_id','rec_usr_mix','rec_veh_loc','rec_veh_des',
+                  'rec_sta','rec_sta_mod','rec_sta_fec')
