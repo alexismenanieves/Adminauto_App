@@ -400,9 +400,9 @@ def apieditrecord():
         ubi     = request.form['rec_veh_loc']
         notas   = request.form['rec_veh_des']
         # Detect record, vehicle and user
-        rec_rs = Records.query.filter_by(rec_id=id).first()
-        veh_rs = Vehicles.query.filter_by(veh_lic_pla=placa.upper()).first()
-        usr_rs = Users.query.filter_by(usr_id=usuario).first()
+        rec_rs = Records.query.filter_by(rec_id=id,rec_sta='ACTIVO').first()
+        veh_rs = Vehicles.query.filter_by(veh_lic_pla=placa.upper(),veh_sta='ACTIVO').first()
+        usr_rs = Users.query.filter_by(usr_id=usuario,usr_sta='ACTIVO').first()
        
         if not veh_rs:
             flash("Vehiculo no existe","danger")
@@ -439,15 +439,18 @@ def apieditrecord():
 @app.route('/apideactivaterecord', methods=['POST'])
 def apideactivaterecord():
     if session.get('edt_nom') and request.method=='POST':
-        now_dt = datetime.now()
-        id = request.form['rec_id']
+        # Basic data
         curr_editor = session['edt_nom']
+        now_dt      = datetime.now()
+        # Retrieve form info
+        id          = request.form['rec_id']
         rec_rs = Records.query.filter_by(rec_id=id,rec_sta='ACTIVO').first()
+        # Redirect or proceed to put record as inactive
         if not rec_rs:
             flash("No se pudo borrar","danger")
             return redirect(url_for('movimiento'))
         else:
-            Users.query.filter_by(rec_id=id).update(dict(
+            Records.query.filter_by(rec_id=id).update(dict(
                 rec_sta    ='INACTIVO',
                 rec_sta_mod=curr_editor.upper(),
                 rec_sta_fec=now_dt))
