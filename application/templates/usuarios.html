@@ -44,7 +44,7 @@
             <td data-name="revision" data-type="text" data-pk="{{  data.usr_cor_ele }}">{{ data.usr_cor_ele }}</td>
             <td data-pk="{{ data.usr_id }}"> 
                 <a class="btn btn-warning btn-xs" data-toggle="modal" data-target="#modaledit{{data.usr_id}}">Editar</a>
-                <a href="/delete/{{data.usr_id}}" class="btn btn-danger btn-xs" onclick="return confirm('Seguro que desea borrar?')">Borrar</a>
+                <a href="/apideactivateuser/{{data.usr_id}}" class="btn btn-danger btn-xs" onclick="return confirm('Seguro que desea borrar?')">Borrar</a>
             </td>
         </tr>
         <!-- Modal Edit Employee-->
@@ -58,29 +58,28 @@
                     <div class="modal-body">
                         <form action="{{url_for('apiedituser')}}" method="POST">
                             <div class="form-group">
-                                <label>Documento:</label>
-                                <!--<input type="hidden" name="usr_id" value="{{data.usr_id}}">-->
-                                <input type="text" class="form-control" name="usr_id" value="{{data.usr_id}}">
+                                <label>Documento: {{data.usr_id}}</label>
+                                <input type="hidden" class="form-control" name="usr_id" value="{{data.usr_id}}">
                             </div>
                             <div class="form-group">
                                 <label>Tipo:</label>
-                                <input type="text" class="form-control" name="usr_tip_doc" value="{{data.usr_tip_doc}}">
+                                <input type="text" class="form-control" style="text-transform: uppercase;" name="usr_tip_doc" value="{{data.usr_tip_doc}}">
                             </div>
                             <div class="form-group">
                                 <label>Nombres:</label>
-                                <input type="text" class="form-control" name="usr_nom" value="{{data.usr_nom}}">
+                                <input type="text" class="form-control" style="text-transform: uppercase;" name="usr_nom" value="{{data.usr_nom}}">
                             </div>
                             <div class="form-group">
                                 <label>Apellido Paterno:</label>
-                                <input type="text" class="form-control" name="usr_ape_pat" value="{{data.usr_ape_pat}}">
+                                <input type="text" class="form-control" style="text-transform: uppercase;" name="usr_ape_pat" value="{{data.usr_ape_pat}}">
                             </div>
                             <div class="form-group">
                                 <label>Apellido Materno:</label>
-                                <input type="text" class="form-control" name="usr_ape_mat" value="{{data.usr_ape_mat}}">
+                                <input type="text" class="form-control" style="text-transform: uppercase;" name="usr_ape_mat" value="{{data.usr_ape_mat}}">
                             </div>
                             <div class="form-group">
-                                <label>Apellido Materno:</label>
-                                <input type="text" class="form-control" name="usr_emp" value="{{data.usr_emp}}">
+                                <label>Empresa:</label>
+                                <input type="text" class="form-control" style="text-transform: uppercase;" name="usr_emp" value="{{data.usr_emp}}">
                             </div>
                             <div class="form-group">
                                 <label>Teléfono:</label>
@@ -88,11 +87,11 @@
                             </div>
                             <div class="form-group">
                                 <label>Email:</label>
-                                <input type="text" class="form-control" name="usr_cor_ele" value="{{data.usr_cor_ele}}">
+                                <input type="text" class="form-control" style="text-transform: uppercase;" name="usr_cor_ele" value="{{data.usr_cor_ele}}">
                             </div>
                             <div class="form-group">
                                 <label>Dirección:</label>
-                                <input type="text" class="form-control" name="usr_dir" value="{{data.usr_dir}}">
+                                <input type="text" class="form-control" style="text-transform: uppercase;" name="usr_dir" value="{{data.usr_dir}}">
                             </div>
                             <div class="form-group">
                                 <button class="btn btn-primary" type="submit">Actualizar</button>
@@ -128,23 +127,23 @@
                         </div>
                         <div class="form-group">
                             <label>Tipo:</label>
-                            <input type="text" class="form-control" name="usr_tip_doc" required="1">
+                            <input type="text" class="form-control" style="text-transform: uppercase;" name="usr_tip_doc" required="1">
                         </div>
                         <div class="form-group">
                             <label>Nombres:</label>
-                            <input type="text" class="form-control" name="usr_nom" required="1">
+                            <input type="text" class="form-control" style="text-transform: uppercase;" name="usr_nom" required="1">
                         </div>
                         <div class="form-group">
                             <label>Apellido Paterno:</label>
-                            <input type="text" class="form-control" name="usr_ape_pat" required="1">
+                            <input type="text" class="form-control" style="text-transform: uppercase;" name="usr_ape_pat" required="1">
                         </div>
                         <div class="form-group">
                             <label>Apellido Materno:</label>
-                            <input type="text" class="form-control" name="usr_ape_mat" required="1">
+                            <input type="text" class="form-control" style="text-transform: uppercase;" name="usr_ape_mat" required="1">
                         </div>
                         <div class="form-group">
                             <label>Empresa:</label>
-                            <input type="text" class="form-control" name="usr_emp" required="1">
+                            <input type="text" class="form-control" style="text-transform: uppercase;" name="usr_emp" required="1">
                         </div>
                         <div class="form-group">
                             <label>Teléfono:</label>
@@ -152,11 +151,11 @@
                         </div>
                         <div class="form-group">
                             <label>Dirección:</label>
-                            <input type="text" class="form-control" name="usr_dir" required="1">
+                            <input type="text" class="form-control" style="text-transform: uppercase;" name="usr_dir" required="1">
                         </div>
                         <div class="form-group">
                             <label>Email:</label>
-                            <input type="text" class="form-control" name="usr_cor_ele" required="1">
+                            <input type="text" class="form-control" style="text-transform: uppercase;" name="usr_cor_ele" required="1">
                         </div>
                         <div class="form-group">
                             <button class="btn btn-primary" type="submit">Agregar usuario</button>
