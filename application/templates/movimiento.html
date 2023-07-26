@@ -27,23 +27,24 @@
             <th scope="col">Usuario</th>
             <th scope="col">Nombre/Apellido</th>
             <th scope="col">Ubicación</th>
+            <th scope="col">Acción</th>
         </tr>
         </thead>
         <tbody>
 
         <!-- Construct the rest of records here -->
-        {% for data in recordTable %}
+        {% for data in recordsTable %}
         <tr>
             <td data-pk="{{ data.rec_id }}" scope='row'>{{ data.rec_id }}</td>
-            <td data-name="Id" data-type="text" data-pk="{{ data.rec_id }}">{{ data.rec_id }}</td>
             <td data-name="Fecha" data-type="date" data-pk="{{ data.rec_dat }}">{{ data.rec_dat }}</td>
             <td data-name="Placa" data-type="text" data-pk="{{  data.rec_veh_pla }}">{{ data.rec_veh_pla }}</td>
             <td data-name="Marca_Modelo" data-type="text" data-pk="{{  data.rec_veh_mix }}">{{ data.rec_veh_mix }}</td>
             <td data-name="Usuario" data-type="text" data-pk="{{  data.rec_usr_id }}">{{ data.rec_usr_id }}</td>
             <td data-name="Nombre_Apellido" data-type="text" data-pk="{{  data.rec_usr_mix }}">{{ data.rec_usr_mix }}</td>
+            <td data-name="Ubicacion" data-type="text" data-pk="{{  data.rec_veh_loc }}">{{ data.rec_veh_loc }}</td>
             <td data-pk="{{ data.rec_id }}"> 
-                <a href="/api/update/{{data.rec_id}}" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#modaledit{{data.veh_lic_pla}}">Editar</a>
-                <a href="/api/delete/{{data.rec_id}}" class="btn btn-danger btn-xs" onclick="return confirm('Seguro que desea borrar?')">Borrar</a>
+                <a class="btn btn-warning btn-xs" data-toggle="modal" data-target="#modaledit{{data.rec_id}}">Editar</a>
+                <a href="/apideactivaterecord/{{data.rec_id}}/" class="btn btn-danger btn-xs" onclick="return confirm('Seguro que desea borrar?')">Borrar</a>
             </td>
         </tr>
         <!-- Modal Edit Record-->
@@ -55,27 +56,30 @@
                     </div>
         
                     <div class="modal-body">
-                        <form action="{{url_for('listado')}}" method="POST">
+                        <form action="{{url_for('apieditrecord')}}" method="POST">
+                            <div class="form-group">
+                                <label>Id: {{data.rec_id}}</label>
+                                <input type="hidden" class="form-control" name="rec_id" value="{{data.rec_id}}">
+                            </div>
+                            <div class="form-group">
+                                <label>Fecha de registro:</label>
+                                <input type="date" class="form-control" name="rec_dat" value="{{data.rec_dat}}">
+                            </div>
                             <div class="form-group">
                                 <label>Placa:</label>
-                                <input type="hidden"  name="veh_lic_pla" value="{{data.veh_lic_pla}}">
-                                <input type="text" class="form-control" name="ve_lic_pla" value="{{data.veh_lic_pla}}">
+                                <input type="text" class="form-control" name="rec_veh_pla" value="{{data.rec_veh_pla}}">
                             </div>
                             <div class="form-group">
-                                <label>Uso:</label>
-                                <input type="text" class="form-control" name="veh_usg" value="{{data.veh_usg}}">
+                                <label>Usuario:</label>
+                                <input type="text" class="form-control" name="rec_usr_id" value="{{data.rec_usr_id}}">
                             </div>
                             <div class="form-group">
-                                <label>Marca:</label>
-                                <input type="text" class="form-control" name="veh_mar" value="{{data.veh_mar}}">
+                                <label>Ubicación:</label>
+                                <input type="text" class="form-control" name="rec_veh_loc" value="{{data.rec_veh_loc}}">
                             </div>
                             <div class="form-group">
-                                <label>Modelo:</label>
-                                <input type="text" class="form-control" name="veh_mod" value="{{data.veh_mod}}">
-                            </div>
-                            <div class="form-group">
-                                <label>Año:</label>
-                                <input type="text" class="form-control" name="veh_yea" value="{{data.veh_yea}}">
+                                <label>Notas:</label>
+                                <input type="text" class="form-control" name="rec_veh_des" value="{{data.rec_veh_des}}">
                             </div>
                             <div class="form-group">
                                 <button class="btn btn-primary" type="submit">Actualizar</button>
@@ -104,65 +108,29 @@
                 </div>
                 
                 <div class="modal-body">
-                    <form action="{{url_for('listado')}}" method="POST">
+                    <form action="{{url_for('apiaddrecord')}}" method="POST">
                         <div class="form-group">
-                            <label>Placa        :</label>
-                            <input type="text" class="form-control" name="veh_lic_pla" required="1">
+                            <label>Fecha de registro:</label>
+                            <input type="date" class="form-control" name="rec_dat" required="1">
                         </div>
                         <div class="form-group">
-                            <label>Uso          :</label>
-                            <input type="text" class="form-control" name="veh_usg" required="1">
+                            <label>Placa:</label>
+                            <input type="text" class="form-control" style="text-transform: uppercase;" name="rec_veh_pla" required="1">
                         </div>
                         <div class="form-group">
-                            <label>Marca        :</label>
-                            <input type="text" class="form-control" name="veh_mar" required="1">
+                            <label>Usuario:</label>
+                            <input type="text" class="form-control" name="rec_usr_id" required="1">
                         </div>
                         <div class="form-group">
-                            <label>Modelo       :</label>
-                            <input type="text" class="form-control" name="veh_mod" required="1">
+                            <label>Ubicación:</label>
+                            <input type="text" class="form-control" style="text-transform: uppercase;" name="rec_veh_loc" required="1">
                         </div>
                         <div class="form-group">
-                            <label>Año          :</label>
-                            <input type="text" class="form-control" name="veh_yea" required="1">
+                            <label>Notas:</label>
+                            <input type="text" class="form-control" style="text-transform: uppercase;" name="rec_veh_des">
                         </div>
                         <div class="form-group">
-                            <label>Color        :</label>
-                            <input type="text" class="form-control" name="veh_col" required="1">
-                        </div>
-                        <div class="form-group">
-                            <label>Propietario  :</label>
-                            <input type="text" class="form-control" name="veh_prop_snp" required="1">
-                        </div>
-                        <div class="form-group">
-                            <label>Usuario      :</label>
-                            <input type="text" class="form-control" name="veh_usr_id" required="1">
-                        </div>
-                        <div class="form-group">
-                            <label>Tiene GPS?   :</label>
-                            <input type="text" class="form-control" name="veh_gps" required="1">
-                        </div>
-                        <div class="form-group">
-                            <label>Ultima revision técnica:</label>
-                            <input type="date" class="form-control" name="veh_rev_tec" required="1">
-                        </div>
-                        <div class="form-group">
-                            <label>Ultima pago de SOAT:</label>
-                            <input type="date" class="form-control" name="veh_soa_seg" required="1">
-                        </div>
-                        <div class="form-group">
-                            <label>Contratante de seguro:</label>
-                            <input type="text" class="form-control" name="veh_seg_ctr" required="1">
-                        </div>
-                        <div class="form-group">
-                            <label>Broker del seguro:</label>
-                            <input type="text" class="form-control" name="veh_seg_bro" required="1">
-                        </div>
-                        <div class="form-group">
-                            <label>Número del seguro:</label>
-                            <input type="text" class="form-control" name="veh_seg_nro" required="1">
-                        </div>
-                        <div class="form-group">
-                            <button class="btn btn-primary" type="submit">Agregar vehículo</button>
+                            <button class="btn btn-primary" type="submit">Agregar movimiento</button>
                         </div>
                     </form>
                 </div>
