@@ -45,6 +45,7 @@ def flota():
     if not session.get('edt_nom'):
         return redirect(url_for('login'))
     flota = Vehicles.query.filter_by(veh_sta='ACTIVO').order_by("veh_usg")
+    db.session.commit()
     return render_template('flota.html', 
                            flotaTable=flota, 
                            flota=True)
@@ -54,6 +55,7 @@ def usuarios():
     if not session.get('edt_nom'):
         return redirect(url_for('login'))
     usuarios = Users.query.filter_by(usr_sta='ACTIVO').order_by("usr_id")
+    db.session.commit()
     return render_template('usuarios.html', 
                            usuariosTable=usuarios, 
                            usuarios=True)
@@ -63,6 +65,7 @@ def movimiento():
     if not session.get('edt_nom'):
         return redirect(url_for('login'))
     records = Records.query.filter_by(rec_sta='ACTIVO').order_by("rec_dat")
+    db.session.commit()
     return render_template('movimiento.html', 
                            recordsTable=records, 
                            records=True)
@@ -201,6 +204,7 @@ def apiedituser():
 
         # Detect user
         user_rs = Users.query.filter_by(usr_id=id,usr_sta='ACTIVO').first()
+        db.session.commit()
         if not user_rs:
             flash("No se pudo actualizar","danger")
             return redirect(url_for('usuarios'))
